@@ -1,0 +1,168 @@
+<dom-module id="app-view">
+
+    <template>
+        <style is="custom-style" include="iron-flex iron-flex-alignment">
+
+            app-header {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                background-color: var(--google-green-500);
+                color: #fff;
+                --app-header-shadow: {
+                    transition: none;
+                };
+                z-index: 1;
+            }
+
+            app-header [title] {
+                margin-left: 30px;
+                font-weight: 300;
+            }
+
+            .bg-header {
+                position: fixed;
+                top: 0px;
+                left: 0;
+                width: 100%;
+                height: 264px;
+                background-color: var(--google-green-500);
+                color: #fff;
+                z-index: -1;
+            }
+
+
+            .content {
+                max-width: 900px;
+                margin: 190px auto;
+                box-sizing: border-box;
+                box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14);
+                background: #fff;
+            }
+            
+            @media (max-width: 932px) {
+                .content{
+                    margin: 190px 16px;
+                }
+
+            }
+
+        </style>
+
+        <app-header fixed>
+            <app-toolbar>
+                <div title>Shopping List</div>
+                <paper-icon-button on-tap="clearCompleted" icon="communication:clear-all"></paper-icon-button>
+            </app-toolbar>
+        </app-header>
+
+        <div class="bg-header"></div>
+
+        <div class="content">
+            <shopping-list items="{{itemsList.items}}" on-complete-item="completeItem"></shopping-list>
+        </div>
+
+        <add-item on-add-item="addItem"></add-item>
+
+        <iron-ajax auto url="/_ah/api/sl/v1/items" method="GET" last-response="{{itemsList}}" handle-as="json"></iron-ajax>
+        <iron-ajax id="completeItemAjax" method="PUT"></iron-ajax>
+        <iron-ajax id="addItemAjax" method="POST" handle-as="json" url="/_ah/api/sl/v1/items"></iron-ajax>
+        <iron-ajax id="clearCompletedItemsAjax" method="DELETE" handle-as="json" url="/_ah/api/sl/v1/items"></iron-ajax>
+
+    </template>
+    <script>
+        Polymer({
+            is: "app-view",
+
+            properties: {
+                itemsList: {
+                    type: Object,
+                    notify:true,
+                    value: function(){
+                        return {
+                            items: []
+                        }
+                    }
+                }
+
+            },
+
+            attached: function(){
+
+                var appHeader = document.querySelector('app-header');
+                var bgHeader = document.querySelector('.bg-header');
+                var appHeaderHeight = appHeader.offsetHeight;
+                var bgHeaderHeight = bgHeader.offsetHeight;
+
+                var transformBgHeader = function () {
+                    var y = window.scrollY;
+                    if (y <= bgHeaderHeight) {
+                        y = 1.5 * y;
+                    }
+                    var s = bgHeader.style;
+                    s.transform = s.webkitTransform = 'translate3d(0,' + -y + 'px,0)';
+                    appHeader.shadow = y > bgHeaderHeight - appHeaderHeight;
+                };
+
+                transformBgHeader();
+
+                addEventListener('scroll', transformBgHeader);
+
+            },
+
+            addItem:function(e){
+                var addItemAjax = this.$.addItemAjax;
+
+                addItemAjax.params = {'name': e.detail.itemName, 'qty': e.detail.itemQty, 'qty_type': e.detail.qtyType};
+
+                addItemAjax.addEventListener('response', function(e){
+                    var newItem = e.detail.response;
+                    this.unshift('itemsList.items', newItem)
+                }.bind(this));
+
+                addItemAjax.generateRequest();
+
+            },
+
+            clearCompleted: function(){
+                var clearCompletedItemsAjax = this.$.clearCompletedItemsAjax;
+
+                clearCompletedItemsAjax.addEventListener('response', function(e){
+                    var clearedItems = e.detail.response.cleared_items;
+
+                    var items = this.itemsList.items;
+
+                    for (var i = 0; i < clearedItems.length; i++){
+
+                        for (var j = 0; j < items.length; j++){
+
+                            if (items[j].id === clearedItems[i].id){
+                                this.arrayDelete("itemsList.items", items[j])
+                            }
+                        }
+                    }
+
+                }.bind(this));
+
+                clearCompletedItemsAjax.generateRequest();
+            },
+
+            completeItem: function (e){
+
+                var completeItemAjax = this.$.completeItemAjax;
+
+                completeItemAjax.url = ['/_ah/api/sl/v1/items',e.detail.id].join("/");
+
+                completeItemAjax.params = {'completed': e.detail.completed};
+
+
+                completeItemAjax.generateRequest();
+
+            }
+
+        });
+
+    </script>
+
+</dom-module>

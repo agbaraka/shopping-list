@@ -1,0 +1,45 @@
+<dom-module id="shopping-item">
+
+    <template>
+        <style is="custom-style" include="iron-flex iron-flex-alignment">
+            paper-icon-item{
+                height: 64px;
+                --paper-item-focused-before:{
+                    background: inherit;
+                };
+
+                border-bottom: 1px solid rgba(0, 0, 0, 0.14);
+            }
+            paper-icon-item paper-input{
+                --paper-input-container-color: #fff
+            }
+            paper-icon-item paper-checkbox{
+                padding-left: 8px;
+            }
+        </style>
+
+        <paper-icon-item>
+            <paper-checkbox checked="{{item.completed}}" on-change="_onCompleteChange" item-icon></paper-checkbox>
+            <div class="flex">{{item.name}}</div>
+            <div style="padding-right: 8px">
+                <span>{{item.qty}}</span> <span>{{item.qty_type}}</span>
+            </div>
+        </paper-icon-item>
+
+    </template>
+    <script>
+        Polymer({
+            is: "shopping-item",
+            properties: {
+                item: Object,
+                notify: true
+            },
+
+            _onCompleteChange: function(){
+                this.fire('complete-item', {id: this.item.id, completed: this.item.completed})
+            }
+
+
+        })
+    </script>
+</dom-module>

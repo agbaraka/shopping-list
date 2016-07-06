@@ -1,0 +1,16 @@
+application: alberts-slist
+version: 1
+module: frontend
+runtime: python27
+api_version: 1
+threadsafe: true
+
+handlers:
+-   url: /
+    static_files: index.html
+    upload: index.html
+    secure: always
+-   url: /elements
+    static_dir: elements
+-   url: /bower_components
+    static_dir: bower_components

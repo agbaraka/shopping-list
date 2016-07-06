@@ -1,0 +1,126 @@
+<!--suppress ALL -->
+<dom-module id="add-item">
+
+
+    <template>
+        <style is="custom-style" include="iron-flex iron-flex-alignment">
+            paper-fab {
+                position: fixed;
+                right: 32px;
+                bottom: 16px;
+                --paper-fab-background: var(--paper-orange-900);
+                color: #fff;
+            }
+            paper-dialog{
+                width: 100%;
+                margin: 40px;
+            }
+            
+            @media (min-width: 640px) {
+                paper-dialog{
+                    width: 50%;
+                    margin: 40px;
+                }
+            }
+            
+
+            paper-dropdown-menu#qtyType{
+                width: 55px;
+                margin-left: 8px;
+            }
+
+            paper-dialog paper-button#addBtn{
+                background-color: var(--google-green-500);
+                color: #fff;
+            }
+
+            paper-dialog paper-button#addBtn[disabled]{
+                background-color: var(--google-grey-500);
+            }
+
+        </style>
+
+
+        <paper-fab icon="add" onclick="addItemForm.open()"></paper-fab>
+
+        <paper-dialog
+                id="addItemForm"
+                entry-animation="scale-up-animation"
+                exit-animation="fade-out-animation"
+                with-backdrop>
+            <h2>Adding New Items</h2>
+            <div>
+                <div style="overflow: hidden">
+                    <paper-input id="itemName" label="Item Name*" value="{{itemName}}" char-counter maxlength="40" required></paper-input>
+                </div>
+                <div class="layout horizontal wrap">
+                    <paper-input id="itemQty" type="number" class="flex" label="Qty/Weight" value="{{itemQty}}" auto-validate allowed-pattern="[0-9]" min="1" required></paper-input>
+                    <paper-dropdown-menu id="qtyType" selected-item-label="{{qtyType}}">
+                        <paper-listbox class="dropdown-content" >
+                            <paper-item>Qty</paper-item>
+                            <paper-item>Kg</paper-item>
+                        </paper-listbox>
+                    </paper-dropdown-menu>
+                </div>
+            </div>
+            <div class="buttons">
+                <paper-button dialog-dismiss>Cancel</paper-button>
+                <paper-button disabled="{{!_isFormValid}}" id="addBtn" on-tap="_addItem">Add</paper-button>
+            </div>
+        </paper-dialog>
+    </template>
+    <script>
+        Polymer({
+            is: "add-item",
+
+            properties: {
+                itemName : {
+                    type: String,
+                    notify: true
+                },
+                itemQty: {
+                    type: Number,
+                    value: 1,
+                    notify: true
+                },
+                qtyType: {
+                    type: String,
+                    value: "",
+                    notify: true
+                },
+                _isFormValid: {
+                    type: Boolean,
+                    computed: '_computeDisable(itemName, itemQty, qtyType)'
+                }
+            },
+
+
+            _computeDisable: function(itemName, itemQty, qtyType){
+
+                if(this.$.itemName.validate() && this.$.itemQty.validate() && qtyType !== ""){
+                    return true;
+                }
+
+                return false;
+            },
+
+            _addItem: function(){
+
+                if (this._isFormValid){
+                    this.fire("add-item", {itemName: this.itemName, itemQty: this.itemQty, qtyType: this.qtyType});
+
+                    this.$.addItemForm.close();
+
+                    this.itemName = "";
+                    this.itemQty = 1;
+                    this.qtyType = ""
+                }
+
+
+            }
+        });
+
+
+
+    </script>
+</dom-module>

@@ -1,0 +1,51 @@
+<dom-module id="shopping-list">
+    <template>
+        <style is="custom-style" include="iron-flex iron-flex-alignment">
+            .no-item{
+                line-height: 128px;
+                font-weight: 700;
+                width: 100%;
+                text-align: center;
+            }
+
+        </style>
+
+
+
+        <div role="listbox" class="items">
+            <template is="dom-if" if="{{isListEmpty}}">
+                <div class="no-item" raised>The Shopping List is empty!!</div>
+            </template>
+            <template is="dom-repeat" items="{{items}}">
+                <shopping-item item="{{item}}"></shopping-item>
+            </template>
+        </div>
+    </template>
+    <script>
+        Polymer({
+            is: "shopping-list",
+            properties: {
+                items : {
+                    type:Array,
+                    value: function(){
+                        return []
+                    },
+                    notify: true
+                },
+                isListEmpty: {
+                    type: Boolean,
+                    notify: true
+                }
+            },
+
+            observers: [
+                'itemsAddedOrRemoved(items.splices)'
+            ],
+
+            itemsAddedOrRemoved: function(changedItem){
+                this.isListEmpty = (this.items.length == 0);
+            },
+
+        })
+    </script>
+</dom-module>
