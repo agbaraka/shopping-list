@@ -55,10 +55,10 @@
                 </div>
                 <div class="layout horizontal wrap">
                     <paper-input id="itemQty" type="number" class="flex" label="Qty/Weight" value="{{itemQty}}" auto-validate allowed-pattern="[0-9]" min="1" required></paper-input>
-                    <paper-dropdown-menu id="qtyType" selected-item-label="{{qtyType}}">
-                        <paper-listbox class="dropdown-content" >
-                            <paper-item>Qty</paper-item>
-                            <paper-item>Kg</paper-item>
+                    <paper-dropdown-menu id="qtyType">
+                        <paper-listbox class="dropdown-content" selected="{{qtyType}}" attr-for-selected="data-value">
+                            <paper-item data-value="qty">Qty</paper-item>
+                            <paper-item data-value="kg">Kg</paper-item>
                         </paper-listbox>
                     </paper-dropdown-menu>
                 </div>
@@ -85,7 +85,7 @@
                 },
                 qtyType: {
                     type: String,
-                    value: "",
+                    value: null,
                     notify: true
                 },
                 _isFormValid: {
@@ -97,7 +97,7 @@
 
             _computeDisable: function(itemName, itemQty, qtyType){
 
-                if(this.$.itemName.validate() && this.$.itemQty.validate() && qtyType !== ""){
+                if(this.$.itemName.validate() && this.$.itemQty.validate() && qtyType !== null){
                     return true;
                 }
 
@@ -113,7 +113,9 @@
 
                     this.itemName = "";
                     this.itemQty = 1;
-                    this.qtyType = ""
+                    this.qtyType=null;
+
+
                 }
 
 
