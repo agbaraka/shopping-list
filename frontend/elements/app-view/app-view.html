@@ -116,10 +116,16 @@
 
                 addItemAjax.params = {'name': e.detail.itemName, 'qty': e.detail.itemQty, 'qty_type': e.detail.qtyType};
 
-                addItemAjax.addEventListener('response', function(e){
+
+                var response = function(e) {
+
                     var newItem = e.detail.response;
-                    this.unshift('itemsList.items', newItem)
-                }.bind(this));
+                    this.unshift('itemsList.items', newItem);
+
+                    addItemAjax.removeEventListener('response', response)
+                }.bind(this);
+
+                addItemAjax.addEventListener('response', response);
 
                 addItemAjax.generateRequest();
 
@@ -128,7 +134,8 @@
             clearCompleted: function(){
                 var clearCompletedItemsAjax = this.$.clearCompletedItemsAjax;
 
-                clearCompletedItemsAjax.addEventListener('response', function(e){
+
+                var response = function(e){
                     var clearedItems = e.detail.response.cleared_items;
 
                     var items = this.itemsList.items;
@@ -143,7 +150,10 @@
                         }
                     }
 
-                }.bind(this));
+                    clearCompletedItemsAjax.removeEventListener('response', response);
+                }.bind(this);
+
+                clearCompletedItemsAjax.addEventListener('response', response);
 
                 clearCompletedItemsAjax.generateRequest();
             },
