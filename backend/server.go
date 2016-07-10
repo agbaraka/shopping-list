@@ -89,22 +89,6 @@ func (API) AddItem(c context.Context, r *AddItemReq) (*Item, error) {
 
 
 
-//GetItem ...
-func (API) GetItem(c context.Context, r *GetItemReq) (*Item, error) {
-
-	item := Item{}
-
-	err := datastore.Get(c, r.Key, &item)
-
-	if err != nil {
-		return nil, err
-	}
-
-	item.Key = r.Key
-
-	return &item, nil
-}
-
 
 
 func (API) UpdateItem(c context.Context, r *UpdateItemReq) (*Item, error) {
@@ -164,8 +148,6 @@ func init() {
 	info := api.MethodByName("GetItems").Info()
 	info.HTTPMethod, info.Path = "GET", "items"
 
-	info = api.MethodByName("GetItem").Info()
-	info.HTTPMethod, info.Path = "GET", "items/{id}"
 
 	info = api.MethodByName("AddItem").Info()
 	info.HTTPMethod, info.Path = "POST", "items"
