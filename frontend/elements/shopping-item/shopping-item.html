@@ -16,13 +16,17 @@
             paper-icon-item paper-checkbox{
                 padding-left: 8px;
             }
+
+            paper-icon-item .qtyType{
+                text-transform: capitalize;
+            }
         </style>
 
         <paper-icon-item>
             <paper-checkbox checked="{{item.completed}}" on-change="_onCompleteChange" item-icon></paper-checkbox>
             <div class="flex">{{item.name}}</div>
             <div style="padding-right: 8px">
-                <span>{{item.qty}}</span> <span>{{item.qty_type}}</span>
+                <span>{{item.qty}}</span> <span class="qtyType">{{item.qty_type}}</span>
             </div>
         </paper-icon-item>
 
