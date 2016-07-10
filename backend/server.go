@@ -8,6 +8,7 @@ import (
 	"github.com/GoogleCloudPlatform/go-endpoints/endpoints"
 	"golang.org/x/net/context"
 	"google.golang.org/appengine/datastore"
+	"time"
 )
 
 //API ..
@@ -20,6 +21,7 @@ type Item struct {
 	Qty       int32          `json:"qty"`
 	QtyType   string         `json:"qty_type"`
 	Completed bool           `json:"completed"`
+	AddedOn time.Time	`json:"added_on"`
 }
 
 //Items ..
@@ -53,7 +55,7 @@ func (API) GetItems(c context.Context) (*ItemsList, error) {
 
 	items := []Item{}
 
-	keys, err := datastore.NewQuery("Item").GetAll(c, &items)
+	keys, err := datastore.NewQuery("Item").Order("-AddedOn").GetAll(c, &items)
 
 	if err != nil {
 		return nil, err
@@ -72,7 +74,7 @@ func (API) AddItem(c context.Context, r *AddItemReq) (*Item, error) {
 
 	k := datastore.NewIncompleteKey(c, "Item", nil)
 
-	item := Item{Name: r.Name, Qty: r.Qty, QtyType: r.QtyType}
+	item := Item{Name: r.Name, Qty: r.Qty, QtyType: r.QtyType, AddedOn:time.Now()}
 
 	k, err := datastore.Put(c, k, &item)
 
