@@ -25,6 +25,7 @@
     "paper-input": "PolymerElements/paper-input#^1.1.11",
     "paper-dialog": "PolymerElements/paper-dialog#^1.0.4",
     "paper-dropdown-menu": "PolymerElements/paper-dropdown-menu#^1.2.2",
-    "iron-ajax": "PolymerElements/iron-ajax#^1.2.1"
+    "iron-ajax": "PolymerElements/iron-ajax#^1.2.1",
+    "paper-spinner": "PolymerElements/paper-spinner#^1.2.0"
   }
 }

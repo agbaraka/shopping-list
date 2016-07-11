@@ -40,6 +40,29 @@
                 box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14);
                 background: #fff;
             }
+
+            #pageLoadingView.active{
+                display: block;
+            }
+
+
+            #pageLoadingView{
+                display: none;
+                position: absolute;
+                background: rgba(255,255,255,0.6);
+                width: 100%;
+                height: 100%;
+                top: 0;
+                z-index: 99;
+            }
+
+            #pageLoadingView paper-spinner{
+                position: absolute;
+                top: 50%;
+                bottom: 50%;
+                left: 50%;
+                right: 50%;
+            }
             
             @media (max-width: 932px) {
                 .content{
@@ -58,6 +81,10 @@
         </app-header>
 
         <div class="bg-header"></div>
+        <div id="pageLoadingView">
+            <paper-spinner id="spinLoader" active></paper-spinner>
+        </div>
+
 
         <div class="content">
             <shopping-list items="{{itemsList.items}}" on-complete-item="completeItem"></shopping-list>
@@ -109,6 +136,23 @@
 
                 addEventListener('scroll', transformBgHeader);
 
+
+                var self = this;
+
+                document.querySelectorAll('iron-ajax').forEach(function(item){
+                    item.addEventListener('request', function(e){
+                        self.activateLoader(true)
+                    });
+
+                    item.addEventListener('response', function(e){
+                        self.activateLoader(false)
+                    });
+                })
+
+            },
+
+            activateLoader: function(isActive){
+                this.toggleClass("active", isActive, this.$.pageLoadingView)
             },
 
             addItem:function(e){
@@ -123,6 +167,7 @@
                     this.unshift('itemsList.items', newItem);
 
                     addItemAjax.removeEventListener('response', response)
+
                 }.bind(this);
 
                 addItemAjax.addEventListener('response', response);
@@ -136,6 +181,8 @@
 
 
                 var response = function(e){
+
+
                     var clearedItems = e.detail.response.cleared_items;
 
                     var items = this.itemsList.items;
@@ -152,6 +199,8 @@
 
                     clearCompletedItemsAjax.removeEventListener('response', response);
                 }.bind(this);
+
+
 
                 clearCompletedItemsAjax.addEventListener('response', response);
 
