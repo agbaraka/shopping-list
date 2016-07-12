@@ -71,6 +71,7 @@
 
             }
 
+
         </style>
 
         <app-header fixed>
@@ -87,7 +88,7 @@
 
 
         <div class="content">
-            <shopping-list items="{{itemsList.items}}" on-complete-item="completeItem"></shopping-list>
+            <shopping-list style="display: none" items="{{itemsList.items}}" on-complete-item="completeItem"></shopping-list>
         </div>
 
         <add-item on-add-item="addItem"></add-item>
@@ -162,9 +163,9 @@
 
                 var response = function(e){
 
-                    this.itemsList = e.detail.response
+                    this.itemsList = e.detail.response;
+                    this.$$('shopping-list').style.display = "block"
 
-                    console.log(e.detail.response)
                 }.bind(this)
 
                 getAllItemsAjax.addEventListener('response', response)
