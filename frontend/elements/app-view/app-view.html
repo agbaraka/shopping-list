@@ -138,6 +138,11 @@
                 addEventListener('scroll', transformBgHeader);
 
 
+
+            },
+
+            ready: function(){
+
                 var self = this;
 
                 document.querySelectorAll('iron-ajax').forEach(function(item){
@@ -148,8 +153,7 @@
                     item.addEventListener('response', function(e){
                         self.activateLoader(false)
                     });
-                })
-
+                });
 
                 this.getAllItems()
             },
@@ -161,9 +165,11 @@
             getAllItems: function(){
                 var getAllItemsAjax = this.$.getAllItemsAjax;
 
+
                 var response = function(e){
 
                     this.itemsList = e.detail.response;
+
                     this.$$('shopping-list').style.display = "block"
 
                 }.bind(this)
@@ -206,15 +212,19 @@
 
                     var items = this.itemsList.items;
 
-                    for (var i = 0; i < clearedItems.length; i++){
+                    if (clearedItems){
+                        for (var i = 0; i < clearedItems.length; i++){
 
-                        for (var j = 0; j < items.length; j++){
+                            for (var j = 0; j < items.length; j++){
 
-                            if (items[j].id === clearedItems[i].id){
-                                this.arrayDelete("itemsList.items", items[j])
+                                if (items[j].id === clearedItems[i].id){
+                                    this.arrayDelete("itemsList.items", items[j])
+                                }
                             }
                         }
                     }
+
+
 
                     clearCompletedItemsAjax.removeEventListener('response', response);
                 }.bind(this);

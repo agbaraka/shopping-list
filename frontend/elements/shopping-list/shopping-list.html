@@ -46,6 +46,11 @@
             ],
 
             itemsAddedOrRemoved: function(changedItem){
+
+                if (this.items === undefined){
+                    this.items = [];
+                }
+
                 this.isListEmpty = (this.items.length == 0);
             },
 
