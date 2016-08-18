@@ -145,7 +145,14 @@
 
                 var self = this;
 
-                document.querySelectorAll('iron-ajax').forEach(function(item){
+                var ironAjaxArray = document.querySelectorAll("iron-ajax");
+
+
+
+                for (var i = 0; i < ironAjaxArray.length; i++){
+                    var item = ironAjaxArray[i];
+
+
                     item.addEventListener('request', function(e){
                         self.activateLoader(true)
                     });
@@ -153,7 +160,8 @@
                     item.addEventListener('response', function(e){
                         self.activateLoader(false)
                     });
-                });
+
+                }
 
                 this.getAllItems()
             },
